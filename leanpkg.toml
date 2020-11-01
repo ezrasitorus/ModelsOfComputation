@@ -1,0 +1,8 @@
+[package]
+name = "ModelsOfComputation"
+version = "0.1"
+lean_version = "leanprover-community/lean:3.21.0"
+path = "src"
+
+[dependencies]
+mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "7fff35f5e9e282dc2931899807e9ed636f3153b7"}
