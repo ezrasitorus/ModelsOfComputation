@@ -176,11 +176,16 @@ begin
             rename [h1_n n, h1_E2' F1, E2' F', E2 F],
             cases F',
             {
+                -- TODO: Understand what's happening here
                 cases h2,
-                                
+                cases h2_a,
+                cases h2,
+                cases h1,
+                cases h1_a,
+                cases h1_a,       
             },
             {
-                
+                rename [F'_a G1, F'_a_1 G2],
             }
         },
         {
