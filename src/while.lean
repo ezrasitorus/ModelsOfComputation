@@ -176,16 +176,31 @@ begin
             rename [h1_n n, h1_E2' F1, E2' F', E2 F],
             cases F',
             {
-                -- TODO: Understand what's happening here
                 cases h2,
                 cases h2_a,
                 cases h2,
-                cases h1,
-                cases h1_a,
-                cases h1_a,       
+                cases h1, 
+                cases h1_a, -- When can a nat evaluate to a nat?
+                cases h1_a, -- When can a nat evaluate to a nat?
             },
             {
-                rename [F'_a G1, F'_a_1 G2],
+                rename [F'_a S, F'_a_1 S'],
+                cases h2,
+                {
+                    cases h2_a, -- A nat cannot further reduce to another expression
+                },
+                {
+                    cases h1,
+                    {
+                        cases h1_a_1,
+                    },
+                    {
+                        cases h2,
+                        cases h2_a_1,
+                        specialize ih2 F1 S' h1_a_1 h2_a_1,
+                        simp [ih2],
+                    }
+                }
             }
         },
         {
