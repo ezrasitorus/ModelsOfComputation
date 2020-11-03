@@ -162,49 +162,67 @@ begin
     intro E,
     induction E with m E1 E2 ih1 ih2,
     {
-        intros E1 E2,
-        intro h,
+        intros E1 E2 h,
         cases h,
     },
     {
+        -- Inductive case - s_left
         intros E1' E2' h1 h2,
         cases h1,
         {
             cases h2,
             {
+                -- This is the case that E1' and E2' are of the form E + E
+                -- This can be easily dealt with using the inductive hypothesis on E1
                 have help : h1_E1' = h2_E1',
                     exact ih1 _ _ h1_a h2_a,
                 simp [help],
             },
+            -- The other cases are when E2' are n + E or n
+            -- This means E1 is n and cannot be evaluated any further
             repeat {cases h1_a},
         },
         {
+            -- This is the unductive case where E1' = n + E
             rename [h1_n n, h1_E2' F1, E2' F', E2 F],
             cases F',
             {
                 -- This is the case when F' is a nat
-                -- This cannot be possible : since when did m + E → n?
-                -- This means E is a nat as well
+                -- This cannot be possible : When does m + E → n? Only when E is a nat
+                -- This means a nat reduces to F1, which is not possible
                 cases h2,
                 cases h1_a,
             },
             {
+                -- This is the case when F' = E + E
                 cases F'_a,
                 {
-                    cases h2,
-                    cases h2_a, -- A nat cannot ne evaluated any further
-                    specialize ih2 _ _ h1_a h2_a,
-                    simp [ih2]
+                    -- This is the case when F'_a is a nat
+                    -- Since we have a + in h2, this means that we got here from the s_left or s_right case
+                        cases h2,
+                    {
+                        -- Here we prove it cannot be the s_left case
+                        cases h2_a, -- A nat cannot be evaluated any further
+                    },
+                    {
+                        -- We use the inductive hypothesis to prove the s_right case
+                        specialize ih2 _ _ h1_a h2_a,
+                        simp [ih2]
+                    }
                 },
                 {
+                    -- This is the case when F'_a is E + E
+                    -- This means a nat reduces to another expression, which is not possible
                     cases h2,
                     cases h2_a,
                 }
             }
         },
         {
+            -- This is the base case where E1' is a nat
             cases E2',
             {
+                -- This is the case where E2' is also a nat
                 cases h2,
                 {
                     rw ← h1_a,
@@ -212,6 +230,7 @@ begin
                 },
             },
             {
+                -- This is the case E2' is E + E
                 cases h2;
                 cases h2_a,
             },
