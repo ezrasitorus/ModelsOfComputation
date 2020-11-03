@@ -107,14 +107,14 @@ begin
     {
         rcases ih1 with ⟨m, hm⟩,
         rcases ih2 with ⟨n, hn⟩,
-        use m + n,
-        exact badd E1 E2  hm hn,
+        use n + m,
+        apply badd; assumption,
     }
 end
 
 def den : w_exp → ℕ 
     | (nat n) := n
-    | (add E1 E2) := den E1 + den E2
+    | (add E1 E2) := den E2 + den E1
 
 theorem ps3_q3 : ∀ E : w_exp, ∀ n : ℕ, den E = n ↔ b_eval E n :=
 begin
