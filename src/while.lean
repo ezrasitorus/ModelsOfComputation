@@ -182,30 +182,23 @@ begin
             rename [h1_n n, h1_E2' F1, E2' F', E2 F],
             cases F',
             {
+                -- This is the case when F' is a nat
+                -- This cannot be possible : since when did m + E → n?
+                -- This means E is a nat as well
                 cases h2,
-                cases h2_a,
-                cases h2,
-                cases h1, 
-                cases h1_a, -- When can a nat evaluate to a nat?
-                cases h1_a, -- When can a nat evaluate to a nat?
+                cases h1_a,
             },
             {
-                rename [F'_a S, F'_a_1 S'],
-                cases h2,
+                cases F'_a,
                 {
-                    cases h2_a, -- A nat cannot further reduce to another expression
+                    cases h2,
+                    cases h2_a, -- A nat cannot ne evaluated any further
+                    specialize ih2 _ _ h1_a h2_a,
+                    simp [ih2]
                 },
                 {
-                    cases h1,
-                    {
-                        cases h1_a_1,
-                    },
-                    {
-                        cases h2,
-                        cases h2_a_1,
-                        specialize ih2 F1 S' h1_a_1 h2_a_1,
-                        simp [ih2],
-                    }
+                    cases h2,
+                    cases h2_a,
                 }
             }
         },
