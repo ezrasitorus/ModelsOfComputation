@@ -170,7 +170,13 @@ begin
         intros E1' E2' h1 h2,
         cases h1,
         {
-            sorry,
+            cases h2,
+            {
+                have help : h1_E1' = h2_E1',
+                    exact ih1 _ _ h1_a h2_a,
+                simp [help],
+            },
+            repeat {cases h1_a},
         },
         {
             rename [h1_n n, h1_E2' F1, E2' F', E2 F],
