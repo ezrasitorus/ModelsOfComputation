@@ -1,6 +1,8 @@
 # Models Of Computation
 
-Formally verified set of notes for the while language from Imperial College London's Models of Computation Course. All written in Lean.
+Formally verified examples of while language program verification as well as a Haskell program to emulate register machines. Based on Imperial College London's Models of Computation Course. 
+
+Verification of while language is all written in Lean.
 
 It's much better to run this on a local machine. To do this, you need to have Lean installed (you can find out how to do it [here](https://leanprover-community.github.io/get_started.html)) and preferably VSCode. Then run 
 
