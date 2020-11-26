@@ -3,7 +3,7 @@ import Data.Maybe
 type Register = Int
 type Label = Int
 
-data Instruction = HALT | Plus Register Label | Minus Register Label Label deriving (Eq)
+data Instruction = HALT | Plus Register Label | Minus Register Label Label deriving (Eq, Show)
 
 type State = [(Register, Int)]
 type Program = [(Label, Instruction)]
@@ -55,8 +55,61 @@ updateAndGet p (Minus r l1 l2) s
         [l1i, l2i] = map (flip lookup p) [l1, l2]
         s' = map (\cell@(r', i) -> if (r' == r) then (r, fromJust r1v - 1) else cell) s
 
-example :: (State, Program)
-example = ([(0, 0), (1, 1), (2, 2)], [(0, Minus 1 1 2), (1, Plus 0 0), (2, Minus 2 3 4), (3, Plus 0 2), (4, HALT)])
 
-nonHaltExample :: (State, Program)
-nonHaltExample = ([(0, 0)], [(0, Plus 0 0)])
+doub :: Int -> Int -> Int
+doub x y = (2 ^ x) * (2 * y  + 1)
+
+doubInverse :: Int -> (Int, Int)
+doubInverse n
+    = (m, div (q - 1) 2)
+    where
+        m = maxPowOf2 n
+        q = div n (2 ^ m)
+        
+
+sing :: Int -> Int -> Int
+sing x y = doub x y - 1
+
+singInverse :: Int -> (Int, Int)
+singInverse n
+    = (m, div (q - 1) 2)
+        where
+            m = maxPowOf2 (n + 1)
+            q = div (n + 1) (2 ^ m)
+
+convertInstruction :: Instruction -> Int
+convertInstruction HALT = 0
+convertInstruction (Plus x l) = doub (2 * x) l
+convertInstruction (Minus x l1 l2) = doub (2 * x + 1) (sing l1 l2)
+
+maxPowOf2 :: Int -> Int
+maxPowOf2 n
+    | r == 1 = 0
+    | otherwise = 1 + maxPowOf2 q
+    where
+        (q, r) = quotRem n 2
+
+convertNumber :: Int -> Instruction
+convertNumber 0 = HALT
+convertNumber e
+    | even m = Plus r e2
+    | otherwise = Minus r o1 o2
+    where
+        m = maxPowOf2 e
+        (e1, e2) = doubInverse e
+        (o1, o2) = singInverse e2
+        r = div e1 2
+
+encode :: Program -> (Int, Int)
+encode p =  ((convertInstruction . snd . head) p, foldr1 doub $ map (convertInstruction . snd) (tail p))
+
+decode :: Int -> Int -> Program
+decode x y = (0, convertNumber x) : zip [1..] (map convertNumber ns)
+    where 
+        ns = map fst $ getDoubPattern y
+
+getDoubPattern :: Int -> [(Int, Int)]
+getDoubPattern 0 = [(0, 0)]
+getDoubPattern n = dp : getDoubPattern n'
+        where
+            dp@(_, n') = doubInverse n
